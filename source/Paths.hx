@@ -9,6 +9,8 @@ class Paths
 {
 	inline public static var SOUND_EXT = #if web "mp3" #else "ogg" #end;
 
+	public static var charactervoice = '';
+
 	static var currentLevel:String;
 
 	static public function setCurrentLevel(name:String)
@@ -87,7 +89,7 @@ class Paths
 
 	inline static public function voices(song:String)
 	{
-		return 'songs:assets/songs/${song.toLowerCase()}/Voices.$SOUND_EXT';
+		return 'songs:assets/songs/${song.toLowerCase()}/Voices-' + charactervoice + '.$SOUND_EXT';
 	}
 
 	inline static public function inst(song:String)

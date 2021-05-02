@@ -1195,9 +1195,21 @@ class PlayState extends MusicBeatState
 		curSong = songData.song;
 
 		if (SONG.needsVoices)
+		{
+			switch(curPlayer)
+			{
+				case 'bf':
+					Paths.charactervoice = 'bf';
+				default:
+					Paths.charactervoice = 'bf';
+			}
 			vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
+			trace(Paths.voices(PlayState.SONG.song));
+		}
 		else
+		{
 			vocals = new FlxSound();
+		}
 
 		FlxG.sound.list.add(vocals);
 
