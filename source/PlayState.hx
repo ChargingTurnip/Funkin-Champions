@@ -1056,6 +1056,7 @@ class PlayState extends MusicBeatState
 	{		
 		inCutscene = false;
 
+		FlxG.sound.music.stop();
 		generateStaticArrows(0);
 		generateStaticArrows(1);
 
