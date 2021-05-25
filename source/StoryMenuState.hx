@@ -26,14 +26,14 @@ class StoryMenuState extends MusicBeatState
 		['Tutorial'],
 		['Bopeebo', 'Fresh', 'Dadbattle'],
 		['Spookeez', 'South', "Monster"],
-		['Pico', 'Philly', "Blammed"],
+		['Pico', 'Philly-Nice', "Blammed"],
 		['Satin-Panties', "High", "Milf"],
 		['Cocoa', 'Eggnog', 'Winter-Horrorland'],
 		['Senpai', 'Roses', 'Thorns'],
 		['B-Tutorial'],
 		['B-Bopeebo', 'B-Fresh', 'B-Dadbattle'],
 		['B-Spookeez', 'B-South'],
-		['B-Pico', 'B-Philly', "B-Blammed"],
+		['B-Pico', 'B-Philly-Nice', "B-Blammed"],
 		['B-Satin-Panties', "B-High", "B-Milf"],
 		['B-Cocoa', 'B-Eggnog', 'B-Winter-Horrorland'],
 		['B-Senpai', 'B-Roses', 'B-Thorns']
@@ -123,7 +123,10 @@ class StoryMenuState extends MusicBeatState
 		if (FlxG.sound.music != null)
 		{
 			if (!FlxG.sound.music.playing)
-				FlxG.sound.playMusic(Paths.music('freakyMenu'));
+			{
+				TitleState.ChangeTitleSong();
+				FlxG.sound.playMusic(Paths.music(TitleState.Song));
+			}
 		}
 
 		persistentUpdate = persistentDraw = true;
