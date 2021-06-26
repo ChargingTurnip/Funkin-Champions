@@ -66,7 +66,7 @@ class PlayState extends MusicBeatState
 	public static var modes:Array<Bool> = [false, false, false, false, false]; //screen, auto, relaxed, champions, perfect 
 	public static var extras:Array<Bool> = [true];
 
-	var halloweenLevel:Bool = false;
+	var halloweenLevel:Bool = false; 
 
 	private var vocals:FlxSound;
 
@@ -142,12 +142,15 @@ class PlayState extends MusicBeatState
 	var roseBeat:Int = 0;
 	
 	var sprinkles:FlxSprite;
+	var tackDrive:FlxSprite;
 
 	var talking:Bool = true;
 	var songScore:Int = 0;
 	var missCount:Int = 0;
 	var scoreTxt:FlxText;
 	var missTxt:FlxText;
+	var SHITTxt:FlxText;
+	private var scores:Array<Int> = [0, 0, 0, 0];
 	
 	public static var campaignScore:Int = 0;
 
@@ -648,29 +651,37 @@ class PlayState extends MusicBeatState
 			
 				curStage = 'tank';
 				
-				defaultCamZoom = 0.9;
+				defaultCamZoom = 0.8;
 				
-				var sky = new FlxSprite(-400,-400).loadGraphic(Paths.image('paintmen/sky'));
+				var sky = new FlxSprite(-450,0).loadGraphic(Paths.image('paintmen/sky'));
+				sky.setGraphicSize(Std.int(sky.width * 1.2));
+				sky.updateHitbox();
 				add(sky);
 				
-				var mountains = new FlxSprite(-300,-20).loadGraphic(Paths.image('paintmen/mountains'));
+				var mountains = new FlxSprite(-200,-20).loadGraphic(Paths.image('paintmen/mountains'));
 				mountains.scrollFactor.set(0.2,0.2);
 				mountains.setGraphicSize(Std.int(mountains.width * 1.2));
 				mountains.updateHitbox();
 				add(mountains);
 				
-				var buildings = new FlxSprite(-200,0).loadGraphic(Paths.image('paintmen/buildings'));
+				var buildings = new FlxSprite(-600,-100).loadGraphic(Paths.image('paintmen/buildings'));
 				buildings.scrollFactor.set(0.35, 0.35);
 				buildings.setGraphicSize(Std.int(buildings.width * 1.2));
 				buildings.updateHitbox();
 				add(buildings);
 				
-				sprinkles = new FlxSprite(100,0);
+				sprinkles = new FlxSprite(0,-50);
 				sprinkles.scrollFactor.set(0.35, 0.35);
 				sprinkles.frames = Paths.getSparrowAtlas('paintmen/SkittlesWatchtower');
 				sprinkles.animation.addByPrefix('idle', 'Sprinkles Watchtower bop', 30, false);
 				sprinkles.animation.play('idle');
 				add(sprinkles);
+				
+				tackDrive = new FlxSprite(-420, 350);
+				tackDrive.scrollFactor.set(0.5, 0.5);
+				tackDrive.frames = Paths.getSparrowAtlas('paintmen/SteveTank');
+                tackDrive.animation.addByPrefix('idle', 'sbeve tack', 30, true);
+                tackDrive.animation.play('idle');
 				
 				var floor = new FlxSprite(-420,-150).loadGraphic(Paths.image('paintmen/floor'));
 				floor.setGraphicSize(Std.int(floor.width * 1.15));
@@ -721,7 +732,7 @@ class PlayState extends MusicBeatState
 		}
 		switch (storyWeek)
 		{
-			case 7|8|9|10:
+			case 8|9|10:
 				gfVersion = 'gf-bsides';
 			case 13:
 				gfVersion = 'gf-pixel-bsides';
@@ -775,6 +786,7 @@ class PlayState extends MusicBeatState
 				dad.y += 100;
 				camPos.set(dad.getGraphicMidpoint().x + 300, dad.getGraphicMidpoint().y);
 			case 'holo' | 'tankman':
+				camPos.set(dad.getGraphicMidpoint().x + 150, dad.getGraphicMidpoint().y + 250);
 				dad.y += 100;
 			
 		}
@@ -788,7 +800,7 @@ class PlayState extends MusicBeatState
 					CharacterSuffix = '-christmas';
 				case 6:
 					CharacterSuffix = '-pixel';
-				case 7|8|9|10:
+				case 8|9|10:
 					CharacterSuffix = '-bsides';
 				case 11:
 					CharacterSuffix = '-car-bsides';
@@ -953,8 +965,14 @@ class PlayState extends MusicBeatState
 			missTxt.scrollFactor.set();
 			add(missTxt);
 			
+			SHITTxt = new FlxText(healthBarBG.x + (healthBarBG.width/2 - 50), healthBarBG.y + 30, 0, "", 20);
+			SHITTxt.setFormat(Paths.font("vcr.ttf"), 20, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
+			SHITTxt.scrollFactor.set();
+			add(SHITTxt); 
+			
 			scoreTxt.cameras = [camHUD];
 			missTxt.cameras = [camHUD];
+			SHITTxt.cameras = [camHUD];
 		}
 		else
 		{
@@ -1042,13 +1060,6 @@ class PlayState extends MusicBeatState
 			}
 		}
 		
-		if (modes[0])
-		{
-			var cinematic:FlxSprite = new FlxSprite(-200,-200).makeGraphic(FlxG.width * 2, FlxG.height * 2, CinematicColorState.cinematicolor);
-			cinematic.scrollFactor.set();
-			add(cinematic);
-		}
-		
 		add(blackOutScreen);
 		
 		if (mominuse)
@@ -1058,6 +1069,13 @@ class PlayState extends MusicBeatState
 			mom.blend = BlendMode.ADD;
 			mom.alpha = 0.7;
 			add(mom);
+		}
+		
+		if (modes[0])
+		{
+			var cinematic:FlxSprite = new FlxSprite(-200,-200).makeGraphic(FlxG.width * 2, FlxG.height * 2, CinematicColorState.cinematicolor);
+			cinematic.scrollFactor.set();
+			add(cinematic);
 		}
 		
 		super.create();
@@ -1733,11 +1751,11 @@ class PlayState extends MusicBeatState
 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
 		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
 
-
 		if (!modes[4])
 		{
 			scoreTxt.text = "Score:" + songScore;
 			missTxt.text = "Misses:" + missCount;
+			SHITTxt.text = scores[0]+'|'+scores[1]+'|'+scores[2]+'|'+scores[3];
 		
 			var iconOffset:Int = 26;
 
@@ -2255,9 +2273,6 @@ class PlayState extends MusicBeatState
 
 				if (SONG.validScore)
 				{
-					#if newgrounds
-					NGio.unlockMedal(60961);
-					#end
 					Highscore.saveWeekScore(storyWeek, campaignScore, storyDifficulty);
 				}
 
@@ -2330,14 +2345,21 @@ class PlayState extends MusicBeatState
 		if (noteDiff > Conductor.safeZoneOffset * 0.9)
 		{
 			daRating = 'shit';
+			scores[3]++;
 		}
 		else if (noteDiff > Conductor.safeZoneOffset * 0.75)
 		{
 			daRating = 'bad';
+			scores[2]++;
 		}
 		else if (noteDiff > Conductor.safeZoneOffset * 0.2)
 		{
 			daRating = 'good';
+			scores[1]++;
+		}
+		else
+		{	
+			scores[0]++;
 		}
 
 		songScore += score;
@@ -2804,7 +2826,19 @@ class PlayState extends MusicBeatState
 			resetFastCar();
 		});
 	}
-
+	
+/*         moveTank: function() {
+                    this.inCutscene || (this.tankAngle += k.elapsed * this.tankSpeed,
+                    this.tankGround.set_angle(this.tankAngle - 90 + 15),
+                    this.tankGround.set_x(this.tankX + 1500 * Math.cos(Math.PI / 180 * (1 * this.tankAngle + 180))),
+                    this.tankGround.set_y(1300 + 1100 * Math.sin(Math.PI / 180 * (1 * this.tankAngle + 180))))
+                },
+				
+	function moveTank()
+	{
+		
+	}
+*/
 	var trainMoving:Bool = false;
 	var trainFrameTiming:Float = 0;
 
@@ -3006,12 +3040,6 @@ class PlayState extends MusicBeatState
 		{
 			case 'tank':
 				sprinkles.animation.play('idle', true);
-				var sdfgkjh = new FlxSprite(-420, 300);
-				sdfgkjh.frames = Paths.getSparrowAtlas('paintmen/SteveTank');
-				sdfgkjh.animation.addByPrefix('idle', 'sbeve tack', 30, true);
-				sdfgkjh.animation.play('idle');
-				sdfgkjh.velocity.x = sdfgkjh.width*2.5;
-				add(sdfgkjh);
 			case 'school':
 				bgGirls.dance();
 
